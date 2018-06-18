@@ -32,4 +32,4 @@ function prepareLesson() {
 }
 
 # prepare lesson data
-prepareLesson 01-wordNet wordnet-testing
+prepareLesson 01-wordnet wordnet-testing
