@@ -1,4 +1,6 @@
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.DepthFirstDirectedPaths;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -21,6 +23,8 @@ public class WordNet {
 
         System.out.println(idToNounMap);
         System.out.println(nounToIdMap);
+        System.out.println(hypernymsGraph);
+        System.out.println(distance("a", "f"));
     }
 
     private void readSynsets(String synsetsFile) {
@@ -42,22 +46,38 @@ public class WordNet {
     }
 
     private void readHypernyms(String hypernymsFile) {
-
+        In in = new In(hypernymsFile);
+        while (!in.isEmpty()) {
+            String line = in.readLine();
+            String[] lineParts = line.split(",");
+            Integer id = Integer.parseInt(lineParts[0]);
+            for (int i = 1; i < lineParts.length; i++) {
+                hypernymsGraph.addEdge(id, Integer.parseInt(lineParts[i]));
+            }
+        }
     }
 
     // returns all WordNet nouns
     public Iterable<String> nouns() {
-        return null;
+        return nounToIdMap.keySet();
     }
 
     // is the word a WordNet noun?
     public boolean isNoun(String word) {
-        return false;
+        return nounToIdMap.containsKey(word);
     }
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB) {
-        return 0;
+        int idFrom = nounToIdMap.get(nounA);
+        int idTo = nounToIdMap.get(nounB);
+
+        DepthFirstDirectedPaths dfs = new DepthFirstDirectedPaths(hypernymsGraph, idFrom);
+        int c = -1;
+        for (int nodeId: dfs.pathTo(idTo)) {
+            c++;
+        }
+        return c;
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
