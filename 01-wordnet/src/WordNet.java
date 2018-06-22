@@ -1,11 +1,8 @@
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Digraph;
-import edu.princeton.cs.algs4.DepthFirstDirectedPaths;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
-import java.util.LinkedList;
 
 public class WordNet {
 
@@ -33,7 +30,7 @@ public class WordNet {
             String line = in.readLine();
             String[] lineParts = line.split(",");
 
-            Integer id = Integer.parseInt(lineParts[0]);
+            int id = Integer.parseInt(lineParts[0]);
             idToNounMap.put(id, lineParts[1]);
 
             String[] nouns = lineParts[1].split(" ");
@@ -48,7 +45,7 @@ public class WordNet {
         while (!in.isEmpty()) {
             String line = in.readLine();
             String[] lineParts = line.split(",");
-            Integer id = Integer.parseInt(lineParts[0]);
+            int id = Integer.parseInt(lineParts[0]);
             for (int i = 1; i < lineParts.length; i++) {
                 hypernymsGraph.addEdge(id, Integer.parseInt(lineParts[i]));
             }

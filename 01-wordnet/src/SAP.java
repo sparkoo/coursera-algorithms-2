@@ -1,6 +1,5 @@
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
-import edu.princeton.cs.algs4.DirectedDFS;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
@@ -22,9 +21,6 @@ public class SAP {
         if (closestAncestorId > -1) {
             BreadthFirstDirectedPaths bfVPath = new BreadthFirstDirectedPaths(graph, v);
             BreadthFirstDirectedPaths bfWPath = new BreadthFirstDirectedPaths(graph, w);
-
-            System.out.println(bfVPath.distTo(closestAncestorId));
-            System.out.println(bfWPath.distTo(closestAncestorId));
 
             return bfVPath.distTo(closestAncestorId) + bfWPath.distTo(closestAncestorId);
         } else {
@@ -56,6 +52,10 @@ public class SAP {
 
     // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
     public int length(Iterable<Integer> v, Iterable<Integer> w) {
+        if (v == null || w == null) {
+            throw new IllegalArgumentException("v nor w can't be null");
+        }
+
         int closestPathLength = -1;
 
         for (int vI : v) {
@@ -72,6 +72,10 @@ public class SAP {
 
     // a common ancestor that participates in shortest ancestral path; -1 if no such path
     public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
+        if (v == null || w == null) {
+            throw new IllegalArgumentException("v nor w can't be null");
+        }
+
         int closestAncestorId = -1;
         int closestPathLength = -1;
 

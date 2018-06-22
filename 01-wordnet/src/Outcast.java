@@ -43,7 +43,7 @@ public class Outcast {
             while (!in.isEmpty()) {
                 words.add(in.readLine());
             }
-            System.out.println(outcast.outcast(words.toArray(new String[words.size()])));
+            // System.out.println(outcast.outcast(words.toArray(new String[words.size()])));
         }
     }
 }
