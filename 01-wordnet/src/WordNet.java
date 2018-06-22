@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public class WordNet {
 
-    private final Map<Integer, List<String>> idToNounMap = new HashMap<>();
+    private final Map<Integer, String> idToNounMap = new HashMap<>();
     private final Map<String, Integer> nounToIdMap = new HashMap<>();
     private final Digraph hypernymsGraph;
 
@@ -32,14 +32,12 @@ public class WordNet {
         while (!in.isEmpty()) {
             String line = in.readLine();
             String[] lineParts = line.split(",");
+
             Integer id = Integer.parseInt(lineParts[0]);
+            idToNounMap.put(id, lineParts[1]);
+
             String[] nouns = lineParts[1].split(" ");
             for (String noun: nouns) {
-                if (!idToNounMap.containsKey(id)) {
-                    idToNounMap.put(id, new LinkedList<String>());
-                }
-                idToNounMap.get(id).add(noun);
-
                 nounToIdMap.put(noun, id);
             }
         }
@@ -83,7 +81,9 @@ public class WordNet {
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
     // in a shortest ancestral path (defined below)
     public String sap(String nounA, String nounB) {
-        return null;
+        SAP sap = new SAP(hypernymsGraph);
+        int ancestorId = sap.ancestor(nounToIdMap.get(nounA), nounToIdMap.get(nounB));
+        return idToNounMap.get(ancestorId);
     }
 
     // do unit testing of this class
