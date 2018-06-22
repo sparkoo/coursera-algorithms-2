@@ -1,6 +1,9 @@
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.DirectedDFS;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 
 public class SAP {
 
@@ -17,10 +20,10 @@ public class SAP {
         int closestAncestorId = ancestor(v, w);
 
         if (closestAncestorId > -1) {
-            DirectedDFS dfsV = new DirectedDFS(graph, v);
-            DirectedDFS dfsW = new DirectedDFS(graph, w);
+            BreadthFirstDirectedPaths bfPath = new BreadthFirstDirectedPaths(graph, v);
+            BreadthFirstDirectedPaths dfPath = new BreadthFirstDirectedPaths(graph, w);
 
-            return dfsV.distTo(closestAncestorId) + dfsW.distTo(closestAncestorId);
+            return bfPath.distTo(closestAncestorId) + dfPath.distTo(closestAncestorId);
         } else {
             return -1;
         }
@@ -30,15 +33,15 @@ public class SAP {
     public int ancestor(int v, int w) {
         int closestAncestorId = -1;
 
-        DirectedDFS dfsV = new DirectedDFS(graph, v);
-        DirectedDFS dfsW = new DirectedDFS(graph, w);
+        BreadthFirstDirectedPaths bfPath = new BreadthFirstDirectedPaths(graph, v);
+        BreadthFirstDirectedPaths dfPath = new BreadthFirstDirectedPaths(graph, w);
 
         for (int i = 0; i < graph.V(); i++) {
-            if (dfsW.marked(i) && dfsV.marked(i)) {
+            if (dfPath.hasPathTo(i) && bfPath.hasPathTo(i)) {
                 if (closestAncestorId == -1) {
                     closestAncestorId = i;
                 } else {
-                    if (dfsV.distTo(i) < dfsV.distTo(closestAncestorId)) {
+                    if (bfPath.distTo(i) < bfPath.distTo(closestAncestorId)) {
                         closestAncestorId = i;
                     }
                 }
@@ -50,24 +53,50 @@ public class SAP {
 
     // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
     public int length(Iterable<Integer> v, Iterable<Integer> w) {
-        int shortestPath = -1;
+        int closestPathLength = -1;
 
         for (int vI : v) {
             for (int wI : w) {
-                // TODO
+                int length = length(vI, wI);
+                if (length != -1 && (closestPathLength == -1 || length < closestPathLength)) {
+                    closestPathLength = length;
+                }
             }
         }
 
-        return shortestPath;
+        return closestPathLength;
     }
 
     // a common ancestor that participates in shortest ancestral path; -1 if no such path
     public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
-        return 0;
+        int closestAncestorId = -1;
+        int closestPathLength = -1;
+
+        for (int vI: v) {
+            for (int wI: w) {
+                int ancestor = ancestor(vI, wI);
+                int length = length(vI, wI);
+                if (length != -1 && (length < closestPathLength || closestPathLength == -1)) {
+                    closestAncestorId = ancestor;
+                    closestPathLength = length;
+                }
+            }
+        }
+
+        return closestAncestorId;
     }
 
     // do unit testing of this class
     public static void main(String[] args) {
-
+        In in = new In(args[0]);
+        Digraph G = new Digraph(in);
+        SAP sap = new SAP(G);
+        while (!StdIn.isEmpty()) {
+            int v = StdIn.readInt();
+            int w = StdIn.readInt();
+            int length   = sap.length(v, w);
+            int ancestor = sap.ancestor(v, w);
+            StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
+        }
     }
 }
