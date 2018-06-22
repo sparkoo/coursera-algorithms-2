@@ -20,10 +20,13 @@ public class SAP {
         int closestAncestorId = ancestor(v, w);
 
         if (closestAncestorId > -1) {
-            BreadthFirstDirectedPaths bfPath = new BreadthFirstDirectedPaths(graph, v);
-            BreadthFirstDirectedPaths dfPath = new BreadthFirstDirectedPaths(graph, w);
+            BreadthFirstDirectedPaths bfVPath = new BreadthFirstDirectedPaths(graph, v);
+            BreadthFirstDirectedPaths bfWPath = new BreadthFirstDirectedPaths(graph, w);
 
-            return bfPath.distTo(closestAncestorId) + dfPath.distTo(closestAncestorId);
+            System.out.println(bfVPath.distTo(closestAncestorId));
+            System.out.println(bfWPath.distTo(closestAncestorId));
+
+            return bfVPath.distTo(closestAncestorId) + bfWPath.distTo(closestAncestorId);
         } else {
             return -1;
         }
@@ -33,15 +36,15 @@ public class SAP {
     public int ancestor(int v, int w) {
         int closestAncestorId = -1;
 
-        BreadthFirstDirectedPaths bfPath = new BreadthFirstDirectedPaths(graph, v);
-        BreadthFirstDirectedPaths dfPath = new BreadthFirstDirectedPaths(graph, w);
+        BreadthFirstDirectedPaths bfVPath = new BreadthFirstDirectedPaths(graph, v);
+        BreadthFirstDirectedPaths bfWPath = new BreadthFirstDirectedPaths(graph, w);
 
         for (int i = 0; i < graph.V(); i++) {
-            if (dfPath.hasPathTo(i) && bfPath.hasPathTo(i)) {
+            if (bfVPath.hasPathTo(i) && bfWPath.hasPathTo(i)) {
                 if (closestAncestorId == -1) {
                     closestAncestorId = i;
                 } else {
-                    if (bfPath.distTo(i) < bfPath.distTo(closestAncestorId)) {
+                    if (bfVPath.distTo(i) < bfWPath.distTo(closestAncestorId)) {
                         closestAncestorId = i;
                     }
                 }

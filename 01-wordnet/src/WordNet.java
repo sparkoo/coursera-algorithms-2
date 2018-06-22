@@ -21,10 +21,10 @@ public class WordNet {
         readHypernyms(hypernyms);
 
 
-        System.out.println(idToNounMap);
-        System.out.println(nounToIdMap);
-        System.out.println(hypernymsGraph);
-        System.out.println(distance("a", "f"));
+        // System.out.println(idToNounMap);
+        // System.out.println(nounToIdMap);
+        // System.out.println(hypernymsGraph);
+        // System.out.println(distance("a", "f"));
     }
 
     private void readSynsets(String synsetsFile) {
