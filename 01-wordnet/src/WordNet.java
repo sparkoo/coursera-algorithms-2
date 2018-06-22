@@ -67,15 +67,8 @@ public class WordNet {
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB) {
-        int idFrom = nounToIdMap.get(nounA);
-        int idTo = nounToIdMap.get(nounB);
-
-        DepthFirstDirectedPaths dfs = new DepthFirstDirectedPaths(hypernymsGraph, idFrom);
-        int c = -1;
-        for (int nodeId: dfs.pathTo(idTo)) {
-            c++;
-        }
-        return c;
+        SAP sap = new SAP(hypernymsGraph);
+        return sap.length(nounToIdMap.get(nounA), nounToIdMap.get(nounB));
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
