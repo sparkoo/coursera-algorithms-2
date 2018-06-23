@@ -1,14 +1,18 @@
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.DirectedCycle;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class WordNet {
 
     private final Map<Integer, String> idToNounMap = new HashMap<>();
-    private final Map<String, Integer> nounToIdMap = new HashMap<>();
+    private final Map<String, List<Integer>> nounToIdMap = new HashMap<>();
     private final Digraph hypernymsGraph;
+    private final SAP sap;
 
     // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms) {
@@ -17,6 +21,10 @@ public class WordNet {
 
         readHypernyms(hypernyms);
 
+        validateOnlyOneRoot(hypernymsGraph);
+        validateCycle(hypernymsGraph);
+
+        sap = new SAP(hypernymsGraph);
 
         // System.out.println(idToNounMap);
         // System.out.println(nounToIdMap);
@@ -35,7 +43,10 @@ public class WordNet {
 
             String[] nouns = lineParts[1].split(" ");
             for (String noun: nouns) {
-                nounToIdMap.put(noun, id);
+                if (!nounToIdMap.containsKey(noun)) {
+                    nounToIdMap.put(noun, new ArrayList<>());
+                }
+                nounToIdMap.get(noun).add(id);
             }
         }
     }
@@ -52,6 +63,25 @@ public class WordNet {
         }
     }
 
+    private void validateOnlyOneRoot(Digraph graph) {
+        boolean foundRoot = false;
+        for (int i = 0; i < graph.V(); i++) {
+            if (graph.outdegree(i) == 0) {
+                if (!foundRoot) {
+                    foundRoot = true;
+                } else {
+                    throw new IllegalArgumentException("graph has more than 1 root");
+                }
+            }
+        }
+    }
+
+    private void validateCycle(Digraph graph) {
+        if (new DirectedCycle(graph).hasCycle()) {
+            throw new IllegalArgumentException("graph has a directed cycle");
+        }
+    }
+
     // returns all WordNet nouns
     public Iterable<String> nouns() {
         return nounToIdMap.keySet();
@@ -59,19 +89,28 @@ public class WordNet {
 
     // is the word a WordNet noun?
     public boolean isNoun(String word) {
+        if (word == null) {
+            throw new IllegalArgumentException("word can't be null");
+        }
         return nounToIdMap.containsKey(word);
     }
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB) {
-        SAP sap = new SAP(hypernymsGraph);
+        if (nounA == null || nounB == null) {
+            throw new IllegalArgumentException("nounA nor nounB can't be null");
+        }
+
         return sap.length(nounToIdMap.get(nounA), nounToIdMap.get(nounB));
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
     // in a shortest ancestral path (defined below)
     public String sap(String nounA, String nounB) {
-        SAP sap = new SAP(hypernymsGraph);
+        if (nounA == null || nounB == null) {
+            throw new IllegalArgumentException("nounA nor nounB can't be null");
+        }
+
         int ancestorId = sap.ancestor(nounToIdMap.get(nounA), nounToIdMap.get(nounB));
         return idToNounMap.get(ancestorId);
     }
