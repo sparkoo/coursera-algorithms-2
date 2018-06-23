@@ -23,7 +23,7 @@ public class Outcast {
                     continue;
                 }
                 distanceI += wordnet.distance(nouns[i], nouns[j]);
-                System.out.println("[ " + nouns[i] + " -> " + nouns[j] + " ] = [" + wordnet.distance(nouns[i], nouns[j]) + "] " + wordnet.sap(nouns[i], nouns[j]));
+                // System.out.println("[ " + nouns[i] + " -> " + nouns[j] + " ] = [" + wordnet.distance(nouns[i], nouns[j]) + "] " + wordnet.sap(nouns[i], nouns[j]));
             }
             if (distanceI > maxDistance) {
                 maxDistance = distanceI;
